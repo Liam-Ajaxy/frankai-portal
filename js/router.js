@@ -12,6 +12,7 @@ const ROUTES = {
   "/usage": { name: "usage", access: "private" },
   "/docs": { name: "docs", access: "private" },
   "/account": { name: "account", access: "private" },
+  "/connect": { name: "connect", access: "private" },
 };
 const ALIASES = { "/welcome": "/", "/index.html": "/" };
 
@@ -73,7 +74,10 @@ export function safeNext(raw) {
   }
   if (url.origin !== location.origin) return null;
   const p = canonicalPath(url.pathname);
-  return Object.hasOwn(ROUTES, p) && ROUTES[p].access === "private" ? p : null;
+  if (!Object.hasOwn(ROUTES, p) || ROUTES[p].access !== "private") return null;
+  // The terminal sign-in page needs its code to survive the trip through the login page
+  const code = p === "/connect" ? (url.searchParams.get("code") ?? "").toUpperCase().replace(/[^A-Z0-9-]/g, "").slice(0, 12) : "";
+  return code ? `${p}?code=${code}` : p;
 }
 export const nextTarget = () => safeNext(new URLSearchParams(location.search).get("next"));
 
@@ -81,7 +85,8 @@ export const nextTarget = () => safeNext(new URLSearchParams(location.search).ge
 export function redirectToLogin() {
   const here = canonicalPath(location.pathname);
   const wanted = Object.hasOwn(ROUTES, here) && ROUTES[here].access === "private" && here !== "/home";
-  navigate(wanted ? `/login?next=${encodeURIComponent(here)}` : "/login", { replace: true });
+  const back = here === "/connect" ? here + location.search : here; // keep ?code= for the terminal sign-in page
+  navigate(wanted ? `/login?next=${encodeURIComponent(back)}` : "/login", { replace: true });
 }
 
 // The scroll position to restore after back/forward or a reload; handed out once.

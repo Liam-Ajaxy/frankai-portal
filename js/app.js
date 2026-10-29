@@ -13,6 +13,7 @@ import * as keys from "./pages/keys.page.js";
 import * as usage from "./pages/usage.page.js";
 import * as docs from "./pages/docs.page.js";
 import * as account from "./pages/account.page.js";
+import * as connect from "./pages/connect.page.js";
 import * as notfound from "./pages/notfound.page.js";
 
 initTheme();
@@ -20,9 +21,9 @@ initTheme();
 // The landing page (and its WebGL scene) loads only for visitors who are not logged in.
 const loadLanding = () => import("./pages/landing.page.js");
 const PUBLIC = { "": loadLanding, welcome: loadLanding, login, signup, forgot };
-const PRIVATE = { home, keys, usage, docs, account };
+const PRIVATE = { home, keys, usage, docs, account, connect };
 const LINKS = [["home", "Home", "home"], ["keys", "Keys", "key"], ["usage", "Usage", "chart"], ["docs", "Docs", "book"], ["account", "Account", "user"]];
-const TITLES = { "": "Frank AI · Developers", welcome: "Frank AI · Developers", login: "Log in", signup: "Request access", forgot: "Reset password", home: "Home", keys: "Keys", usage: "Usage", docs: "Docs", account: "Account", notfound: "Page not found" };
+const TITLES = { "": "Frank AI · Developers", welcome: "Frank AI · Developers", login: "Log in", signup: "Request access", forgot: "Reset password", home: "Home", keys: "Keys", usage: "Usage", docs: "Docs", account: "Account", connect: "Connect your terminal", notfound: "Page not found" };
 const STATUS_KIND = { approved: "good", pending: "warn", suspended: "bad" };
 
 const root = document.getElementById("app");
